@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة تحكم المسؤول</title>
+  <style>
+    body { font-family: 'Tahoma'; direction: rtl; background: #f9f9f9; padding: 20px; }
+    input, button { padding: 10px; font-size: 16px; margin: 5px; }
+    .link-box { background: #fff; padding: 10px; border-radius: 5px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>لوحة تحكم المسؤول</h2>
+  <label>الرقم السري (3 أرقام مختلفة):</label><br>
+  <input type="text" id="secretInput" maxlength="3">
+  <button onclick="setSecret()">تحديث الرقم السري</button><br><br>
+
+  <label>أدخل أسماء المتسابقين (مفصولة بفواصل):</label><br>
+  <input type="text" id="playersInput" style="width: 80%;">
+  <button onclick="generateLinks()">إنشاء روابط المتسابقين</button>
+
+  <div id="links" class="link-box"></div>
+
+  <script>
+    function setSecret() {
+      const secret = document.getElementById('secretInput').value.trim();
+      if (!/^[0-9]{3}$/.test(secret)) {
+        alert("يجب أن يكون الرقم 3 أرقام مختلفة");
+        return;
+      }
+      localStorage.setItem("secretNumber", secret);
+      localStorage.setItem("secretVersion", Date.now().toString());
+      alert("✅ تم تعيين الرقم السري");
+    }
+
+    function generateLinks() {
+      const raw = document.getElementById("playersInput").value;
+      const names = raw.split(",").map(n => n.trim()).filter(n => n);
+      const linksDiv = document.getElementById("links");
+      linksDiv.innerHTML = "<h3>روابط المتسابقين:</h3>";
+      names.forEach(name => {
+        const link = `${location.origin + location.pathname.replace('admin.html', '')}game.html?player=${encodeURIComponent(name)}`;
+        linksDiv.innerHTML += `<div><a href="${link}" target="_blank">${name}</a></div>`;
+      });
+    }
+  </script>
+</body>
+</html>
